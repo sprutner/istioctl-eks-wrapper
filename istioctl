@@ -1,0 +1,70 @@
+#/bin/bash
+# set -e
+
+## Pre-req check
+##Check to see if Heptio is installed and in the user's path:
+which heptio-authenticator-aws &>/dev/null
+
+if [ $? -ne 0 ]; then
+  echo "Heptio not installed or not in your PATH. Please see README.md for instructions."
+  exit 1
+fi
+
+##Check to see if aws is installed and in the user's path:
+aws eks list-clusters &>/dev/null
+
+if [ $? -ne 0 ]; then
+  echo "AWS CLI has errored. Either it's not installed, the eks module is missing, \
+or you are not authorized. Please see README.md for instructions."
+  exit 1
+fi
+
+## Variables
+CONFIG_FILE=~/.kube/config-istio
+EXPIRETIME=600
+CLUSTER=$(kubectl config view --minify -o jsonpath='{.users[0].user.exec.args[2]}')
+FILEAGE=0
+
+## Function
+get_token () {
+PASSED_CLUSTER=$1
+## Get a token, cluster url, and certificate and strip the uninteresting bits
+TOKEN=$(heptio-authenticator-aws token -i $PASSED_CLUSTER | awk -F: {'print $6'} | cut -d } -f 1)
+CLUSTERURL=$(aws eks describe-cluster --cluster-name $PASSED_CLUSTER --query='cluster.masterEndpoint')
+CLUSTERCA=$(aws eks describe-cluster --cluster-name $PASSED_CLUSTER --query='cluster.certificateAuthority.data')
+
+cat > $CONFIG_FILE << EOF
+apiVersion: v1
+clusters:
+- cluster:
+    server: $CLUSTERURL
+    certificate-authority-data: $CLUSTERCA
+  name: eks
+contexts:
+- context:
+    cluster: eks
+    user: aws
+  name: aws
+current-context: aws
+kind: Config
+preferences: {}
+users:
+- name: aws
+  user:
+    token: $TOKEN
+EOF
+
+}
+
+## If ~/.kube/config-istio exists, check its timestamp
+if [ -e $CONFIG_FILE ]; then
+    CONFIG_FILE_TIMESTAMP=$(date -r $CONFIG_FILE +%s)
+    CURRENT_TIME=$(date +%s)
+    FILEAGE=$(($CURRENT_TIME-$CONFIG_FILE_TIMESTAMP))
+fi
+
+if [ $FILEAGE -gt $EXPIRETIME ] || [ ! -e $CONFIG_FILE ]; then
+    get_token $CLUSTER
+fi
+
+./command/istioctl.`uname` -c $CONFIG_FILE "$@"
