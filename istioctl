@@ -30,8 +30,8 @@ get_token () {
 PASSED_CLUSTER=$1
 ## Get a token, cluster url, and certificate and strip the uninteresting bits
 TOKEN=$(heptio-authenticator-aws token -i $PASSED_CLUSTER | awk -F: {'print $6'} | cut -d } -f 1)
-CLUSTERURL=$(aws eks describe-cluster --cluster-name $PASSED_CLUSTER --query='cluster.masterEndpoint')
-CLUSTERCA=$(aws eks describe-cluster --cluster-name $PASSED_CLUSTER --query='cluster.certificateAuthority.data')
+CLUSTERURL=$(aws eks describe-cluster --name $PASSED_CLUSTER --query='cluster.endpoint')
+CLUSTERCA=$(aws eks describe-cluster --name $PASSED_CLUSTER --query='cluster.certificateAuthority.data')
 
 cat > $CONFIG_FILE << EOF
 apiVersion: v1

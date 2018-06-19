@@ -47,6 +47,8 @@ users:
 Be sure to replace ```<your cluster certificate>```, ```<your cluster URL>```, and ```<EKS cluster name>``` with the proper values.
 
 ## Usage
+
+**SET YOUR $AWS_DEFAULT_REGION ENV VAR TO THE REGION EKS IS IN**
 Authenticate your aws cli as you normally do with aws-adfs, but do not specify a profile. Your AWS token must be in your default profile. Run the istioctl command just as you would without this wrapper
 ```
 ./istioctl get routerules
