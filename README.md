@@ -1,6 +1,10 @@
 # platform.infrastructure.istioctl.auth
 A wrapper workaround for istioctl authentication with heptio.
 
+## Description
+
+This bash script is a wrapper that creates a temporary config file at ~/.kube/config-istio and uses it to authenticate with heptio authenticator and allow istioctl access to EKS
+
 ## Pre-reqs
 kubectl version 1.10+
 
@@ -56,3 +60,7 @@ Authenticate your aws cli as you normally do with aws-adfs, but do not specify a
 This will determine your cluster name by looking at your kubeconfig current context and grabbing the cluster name from the args in the user section of the current context you are in.
 
 You can add the path to where ever you clone this repo to run istioctl without the "./" in front.
+
+## Troubleshooting
+
+If this fails to query AWS properly, you will get a bunk configuration file at ~/.kube/config-istio. One common example would be the wrong AWS region being set. You need to manually delete the file, as it will not be overwritten on your second attempt. `rm ~/.kube/config-istio`
