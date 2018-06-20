@@ -65,3 +65,7 @@ You can add the path to where ever you clone this repo to run istioctl without t
 
 - If this fails to query AWS properly, you will get a bunk configuration file at ~/.kube/config-istio. One common example would be the wrong AWS region being set. You need to manually delete the file, as it will not be overwritten on your second attempt. Check your AWS `echo $AWS_DEFAULT_REGION` Set the AWS region with `export AWS_DEFAULT_REGION=<region>` and `rm ~/.kube/config-istio`.
 - You can get path issues with istioctl where your shell will be trying to run the original istioctl binary instead of the wrapper. Run a `which istioctl` to be sure.
+
+## Credits
+
+Credit goes to @jaredeis for sharing this wrapper with the community.
