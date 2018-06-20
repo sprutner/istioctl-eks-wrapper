@@ -10,7 +10,10 @@ kubectl version 1.10+
 
 The latest version of the AWS CLI, which has EKS in it.
 
-Heptio authenticator with the location added to your $PATH. Here is how I installed it with ZSH. Modify where you copy the location to your path apporiately (~/.bash_profile on MacOS) if you are using bash.
+Heptio authenticator with the location added to your $PATH. 
+
+### Install heptio
+Here is how I installed it with ZSH. Modify where you copy the location to your path apporiately (~/.bash_profile on MacOS) if you are using bash.
 ```
 curl -o heptio-authenticator-aws https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-06-05/bin/darwin/amd64/heptio-authenticator-aws
 chmod +x ./heptio-authenticator-aws
@@ -19,10 +22,6 @@ cp ./heptio-authenticator-aws ~/bin/
 echo 'export PATH=$HOME/bin:$PATH' >> ~/.zshrc
 ```
 
-### Install heptio
-```
-go get -u -v github.com/heptio/authenticator/cmd/heptio-authenticator-aws
-```
 Kubeconfig file in ~/.kube/config with a similar config as this:
 ```
 apiVersion: v1
