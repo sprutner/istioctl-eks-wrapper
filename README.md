@@ -8,12 +8,16 @@ This bash script is a wrapper that creates a temporary config file at ~/.kube/co
 ## Pre-reqs
 kubectl version 1.10+
 
-AWS CLI with the EKS module installed. To install the EKS module to your AWS CLI (until it's added to the CLI bu Amazon):
+The latest version of the AWS CLI, which has EKS in it.
+
+Heptio authenticator with the location added to your $PATH. Here is how I installed it with ZSH. Modify where you copy the location to your path apporiately (~/.bash_profile on MacOS) if you are using bash.
 ```
-curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/2018-04-04/eks-2017-11-01.normal.json
-aws configure add-model --service-model file://eks-2017-11-01.normal.json --service-name eks
+curl -o heptio-authenticator-aws https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-06-05/bin/darwin/amd64/heptio-authenticator-aws
+chmod +x ./heptio-authenticator-aws
+mkdir ~/bin
+cp ./heptio-authenticator-aws ~/bin/
+echo 'export PATH=$HOME/bin:$PATH' >> ~/.zshrc
 ```
-Heptio authenticator with the location added to your $PATH. You can install it with go. If you need to install go, see https://golang.org/doc/install. You can install it with homebrew on Mac.
 
 ### Install heptio
 ```
